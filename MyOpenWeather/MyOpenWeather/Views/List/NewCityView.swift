@@ -54,7 +54,7 @@ struct NewCityView : View {
             self.presentationMode.wrappedValue.dismiss()
         }) {
             Text("cancel")
-                .foregroundColor(Color(hex: "51C4D3"))
+//                .foregroundColor(Color(hex: "51C4D3"))
         }
     }
     

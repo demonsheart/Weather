@@ -22,8 +22,19 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
         
         let window = UIWindow(windowScene: windowScene)
-        let cityStore = CityStore()
-        window.rootViewController = UIHostingController(rootView: CityListView().environmentObject(cityStore))
+        
+//        let weatherVC = UIHostingController(rootView: CityListView().environmentObject(CityStore()))
+//        weatherVC.tabBarItem.image = UIImage(systemName: "cloud")
+//
+//        let calendarVC = UIHostingController(rootView: CalendarView())
+//        calendarVC.tabBarItem.image = UIImage(systemName: "calendar")
+//
+//        let tabbar = UITabBarController()
+//        tabbar.viewControllers = [weatherVC, calendarVC]
+//        window.rootViewController = tabbar
+        
+//        let cityStore = CityStore()
+        window.rootViewController = UIHostingController(rootView: MainView())
         self.window = window
         window.makeKeyAndVisible()
     }

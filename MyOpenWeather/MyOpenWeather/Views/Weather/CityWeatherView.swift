@@ -29,10 +29,9 @@ struct CityWeatherView : View {
         ZStack {
             Image("hello")
                 .resizable()
+                .ignoresSafeArea(.all, edges: .all)
             
             ScrollView {
-                
-                Rectangle().frame(height: 50).foregroundColor(.clear)
                 
                 LazyVStack {
                     VStack{
@@ -56,7 +55,6 @@ struct CityWeatherView : View {
                 }
             }
         }
-        .edgesIgnoringSafeArea(.all)
         .foregroundColor(.white)
     }
     

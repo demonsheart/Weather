@@ -35,7 +35,7 @@ struct CityListView : View {
         })
         .onDisappear(perform: {
             // reset the background color to the cached value
-            UITableView.appearance().backgroundColor = UIColor.systemBackground
+//            UITableView.appearance().backgroundColor = UIColor.systemBackground
         })
     }
     
@@ -50,7 +50,7 @@ struct CityListView : View {
                     break
             }
         }
-        .foregroundColor(Color(hex: "51C4D3"))
+//        .foregroundColor(Color(hex: "51C4D3"))
     }
     
     private var addButton: some View {
@@ -60,7 +60,7 @@ struct CityListView : View {
             Image(systemName: "plus")
                 .resizable()
                 .frame(width: 20, height: 20)
-                .foregroundColor(Color(hex: "51C4D3"))
+//                .foregroundColor(Color(hex: "51C4D3"))
         }.sheet(isPresented: $isPresentingModal) {
             NewCityView().environmentObject(self.cityStore)
         }
