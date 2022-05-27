@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import Kingfisher
 
 struct ForecastView: View {
     
@@ -15,28 +16,47 @@ struct ForecastView: View {
     
     @State var curCity: City
     
+    var customLabel: some View {
+        HStack {
+            Image(systemName: "location")
+            Text(String(curCity.name))
+            Text("⌵")
+                .offset(y: -4)
+        }
+        .foregroundColor(.white)
+        .font(.title)
+        .padding()
+        .frame(height: 32)
+        .background(Color(hex: "7ee5c2"))
+        .cornerRadius(16)
+    }
+    
     var body: some View {
         ZStack {
             Color(hex: "CDF0EA")
                 .ignoresSafeArea()
             
             VStack {
-                Picker("City", selection: $curCity) {
-                    ForEach(cityStore.cities, id: \.self) { item in
-                        Text("\(item.name)")
+                Menu {
+                    Picker(selection: $curCity, label: EmptyView()) {
+                        ForEach(cityStore.cities, id: \.self) { item in
+                            Text("\(item.name)")
+                        }
                     }
-                }.pickerStyle(.wheel)
+                } label: {
+                    customLabel
+                }
+                
+                Divider()
                 
                 MonthViewBelowThirty(showHeader: false) { date in
-                    Text("30")
-                        .hidden()
-                        .padding(8)
-                        .background(Color.gray)
-                        .clipShape(Circle())
-                        .padding(.vertical, 4)
-                        .overlay(
-                            Text(String(self.calendar.component(.day, from: date)))
-                        )
+                    VStack {
+                        Text(String(self.calendar.component(.day, from: date)))
+                        KFImage(URL(string: "https://openweathermap.org/img/wn/10d@2x.png"))
+                            .resizable()
+                            .frame(width: 30, height: 30)
+                    }
+                    .padding(EdgeInsets(top: 3, leading: 6, bottom: 3, trailing: 6))
                 }
                 
                 Spacer()
