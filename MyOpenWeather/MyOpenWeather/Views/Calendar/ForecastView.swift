@@ -14,12 +14,10 @@ struct ForecastView: View {
     
     @EnvironmentObject var cityStore: CityStore
     
-    @State var curCity: City
-    
     var customLabel: some View {
         HStack {
             Image(systemName: "location")
-            Text(String(curCity.name))
+            Text(String(cityStore.selectedCity.name))
             Text("⌵")
                 .offset(y: -4)
         }
@@ -38,7 +36,7 @@ struct ForecastView: View {
             
             VStack {
                 Menu {
-                    Picker(selection: $curCity, label: EmptyView()) {
+                    Picker(selection: $cityStore.selectedCity, label: EmptyView()) {
                         ForEach(cityStore.cities, id: \.self) { item in
                             Text("\(item.name)")
                         }
@@ -52,6 +50,7 @@ struct ForecastView: View {
                 MonthViewBelowThirty(showHeader: false) { date in
                     VStack {
                         Text(String(self.calendar.component(.day, from: date)))
+                        // TODO: set weather
                         KFImage(URL(string: "https://openweathermap.org/img/wn/10d@2x.png"))
                             .resizable()
                             .frame(width: 30, height: 30)
@@ -67,7 +66,7 @@ struct ForecastView: View {
 
 struct ForecastView_Previews: PreviewProvider {
     static var previews: some View {
-        ForecastView(curCity: City(name: "Xinyi", lon: 111.1032678, lat: 22.4277951))
+        ForecastView()
             .environmentObject(CityStore())
     }
 }

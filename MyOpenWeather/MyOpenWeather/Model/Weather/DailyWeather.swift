@@ -132,3 +132,72 @@ struct FeelsLike: Codable {
         case morn = "morn"
     }
 }
+
+// 日历的daily Weather Model
+struct ThirtyDailyWeather: Codable, Identifiable {
+    
+    var id = UUID()
+    
+    /// 当前时间、Unix、UTC
+    let dt: Double
+    
+    /// 日出时间、Unix、UTC
+    let sunrise: Double
+    
+    /// 日落时间，Unix，UTC
+    let sunset: Double
+    
+    /// 从早到晚的温度
+    let temp: Temp
+    
+    /// 这解释了人类对天气的感知 从早到晚
+    let feelsLike: FeelsLike
+    
+    /// 海平面上的大气压，hPa
+    let pressure: Int
+    
+    /// 湿度， ％
+    let humidity: Int
+    
+    /// 风速。单位 - 默认：米/秒，公制：米/秒，英制：英里/小时
+    let windSpeed: Double
+    
+    /// 风向，度数（气象
+    let windDeg: Int
+    
+    /// 云量，%
+    let clouds: Int
+    
+    /// 降水的概率。参数的值在 0 和 1 之间变化，其中 0 等于 0%，1 等于 100%
+    let pop: Double?
+    
+    /// （如果有）最近一小时的雨量，毫米
+    let rain: Double?
+    
+    /// （如果有）最近一小时的降雪量，毫米
+    let snow: Double?
+    
+    let weather: [Weather]
+    
+    /// KFImage(URL(string: icon))
+    var icon: String {
+        return weather.first?.iconURL ?? ""
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case dt = "dt"
+        case sunrise = "sunrise"
+        case sunset = "sunset"
+        case temp = "temp"
+        case feelsLike = "feels_like"
+        case pressure = "pressure"
+        case humidity = "humidity"
+        case windSpeed = "speed"
+        case windDeg = "deg"
+        case clouds = "clouds"
+        case pop = "pop"
+        case rain = "rain"
+        case snow = "snow"
+        case weather = "weather"
+    }
+}

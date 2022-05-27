@@ -24,6 +24,8 @@ class City: ObservableObject, Codable, Hashable {
     
     @Published var weather: WeatherModel?
     
+    @Published var thirtyWeather: ThirtyWeatherList?
+    
     enum CodingKeys: String, CodingKey {
         case name = "name"
         case longitude = "longitude"
@@ -55,6 +57,17 @@ class City: ObservableObject, Codable, Hashable {
         WeatherManager.getWeather(for: self) { (weather) in
             DispatchQueue.main.async {
                 self.weather = weather
+            }
+        }
+    }
+    
+    func getThirtyWeather() {
+        // MARK: 暂时只请求一次
+        if thirtyWeather != nil { return }
+        
+        WeatherManager.getThirtyWeather(for: self) { (weather) in
+            DispatchQueue.main.async {
+                self.thirtyWeather = weather
             }
         }
     }

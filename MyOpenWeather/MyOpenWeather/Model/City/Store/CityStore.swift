@@ -19,6 +19,12 @@ class CityStore: ObservableObject {
         }
     }
     
+    @Published var selectedCity: City {
+        didSet {
+            selectedCity.getThirtyWeather()
+        }
+    }
+    
     private var needsWrite: Bool
     private let fileManager: FileManager
     private let configFilePath: String
@@ -32,11 +38,12 @@ class CityStore: ObservableObject {
     init() {
         needsWrite = false
         fileManager = .default
-        self.configFilePath = configurationDirectory + "/city.json"
+        configFilePath = configurationDirectory + "/city.json"
+        selectedCity = City(name: "Xinyi", lon: 111.1032678, lat: 22.4277951)
         
         if let data = fileManager.contents(atPath: configFilePath) {
             let decoder = JSONDecoder()
-            if let model = try? decoder.decode([City].self, from: data) {
+            if let model = try? decoder.decode([City].self, from: data), !model.isEmpty {
                 cities = model
                 cities.forEach{ $0.getWeather() }
             } else {
@@ -46,6 +53,8 @@ class CityStore: ObservableObject {
             cities = defautCities
         }
         
+        selectedCity = cities.first ?? City(name: "Xinyi", lon: 111.1032678, lat: 22.4277951)
+        selectedCity.getThirtyWeather()
         
         NotificationCenter.default.addObserver(forName: UIApplication.willResignActiveNotification, object: nil, queue: nil) { [weak self] (_) in
             self?.writeToStarageIfNeed()

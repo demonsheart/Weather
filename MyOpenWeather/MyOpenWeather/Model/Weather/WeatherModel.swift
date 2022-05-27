@@ -49,3 +49,9 @@ struct WeatherAlerts: Codable {
     /// 警报说明
     let tags: String
 }
+
+struct ThirtyWeatherList: Codable {
+    let code: String
+    
+    let list: [ThirtyDailyWeather]
+}
