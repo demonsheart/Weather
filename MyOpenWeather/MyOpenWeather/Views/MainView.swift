@@ -8,15 +8,21 @@
 import SwiftUI
 
 struct MainView: View {
+    @EnvironmentObject var cityStore: CityStore
+    
+    var defaultCity: City {
+        return cityStore.cities.first ??  City(name: "Xinyi", lon: 111.1032678, lat: 22.4277951)
+    }
+    
     var body: some View {
         TabView {
-            CityListView().environmentObject(CityStore())
+            CityListView().environmentObject(cityStore)
                 .tabItem {
                     Label("Weather", systemImage: "cloud")
                 }
-            CalendarView()
+            ForecastView(curCity: defaultCity).environmentObject(cityStore)
                 .tabItem {
-                    Label("Calendar", systemImage: "calendar")
+                    Label("Forecast", systemImage: "calendar")
                 }
         }
     }
@@ -25,5 +31,6 @@ struct MainView: View {
 struct MainView_Previews: PreviewProvider {
     static var previews: some View {
         MainView()
+            .environmentObject(CityStore())
     }
 }

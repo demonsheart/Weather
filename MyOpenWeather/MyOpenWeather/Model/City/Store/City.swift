@@ -8,13 +8,16 @@
 import Combine
 import Foundation
 
-class City: ObservableObject, Codable, Equatable {
+class City: ObservableObject, Codable, Hashable {
     
     static func == (lhs: City, rhs: City) -> Bool {
         return lhs.name == rhs.name && lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
     }
     
-        
+    func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+    }
+    
     var name: String
     var longitude: Double
     var latitude: Double
