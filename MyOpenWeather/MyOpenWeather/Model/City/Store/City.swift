@@ -73,4 +73,38 @@ class City: ObservableObject, Codable, Hashable {
         }
     }
     
+    func getCallBack(complete: @escaping (ThirtyWeatherList?) -> Void) {
+        if thirtyWeather != nil {
+            complete(thirtyWeather)
+        } else {
+            WeatherManager.getThirtyWeather(for: self) { (weather) in
+                DispatchQueue.main.async {
+                    complete(weather)
+                }
+            }
+        }
+    }
+    
+}
+
+class CalendarViewModel: ObservableObject {
+    @Published var selectedCity: City {
+        didSet {
+            synWeather()
+        }
+    }
+    
+    @Published var thirtyWeather: ThirtyWeatherList?
+    
+    private func synWeather() {
+        thirtyWeather = nil
+        selectedCity.getCallBack { list in
+            self.thirtyWeather = list
+        }
+    }
+    
+    init(selectedCity: City) {
+        self.selectedCity = selectedCity
+        synWeather()
+    }
 }

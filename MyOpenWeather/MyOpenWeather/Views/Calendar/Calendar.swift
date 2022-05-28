@@ -188,7 +188,7 @@ struct MonthViewBelowThirty<DateView>: View where DateView: View {
     @Environment(\.calendar) var calendar
     
     let content: (Date, ThirtyDailyWeather?) -> DateView
-    @Binding var thirty: ThirtyWeatherList?
+    var thirty: ThirtyWeatherList?
     
     var weathers: [ThirtyDailyWeather] {
         return thirty?.list ?? [ThirtyDailyWeather]()
@@ -199,11 +199,11 @@ struct MonthViewBelowThirty<DateView>: View where DateView: View {
     }
 
     init(
-        thirty: Binding<ThirtyWeatherList?>,
+        thirty: ThirtyWeatherList?,
         @ViewBuilder content: @escaping (Date, ThirtyDailyWeather?) -> DateView
     ) {
         self.content = content
-        self._thirty = thirty
+        self.thirty = thirty
     }
 
     private var weeks: [Date] {

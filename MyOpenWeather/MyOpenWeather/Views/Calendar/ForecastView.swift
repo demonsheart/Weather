@@ -14,14 +14,14 @@ struct ForecastView: View {
     
     @EnvironmentObject var cityStore: CityStore
     
-    @State var selectedCity: City
+    @ObservedObject var viewModel: CalendarViewModel
     
     let dateStr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
     
     var customLabel: some View {
         HStack {
             Image(systemName: "location")
-            Text(String(selectedCity.name))
+            Text(String(viewModel.selectedCity.name))
             Text("⌵")
                 .offset(y: -4)
         }
@@ -40,7 +40,7 @@ struct ForecastView: View {
             
             VStack {
                 Menu {
-                    Picker(selection: $selectedCity, label: EmptyView()) {
+                    Picker(selection: $viewModel.selectedCity, label: EmptyView()) {
                         ForEach(cityStore.cities, id: \.self) { item in
                             Text("\(item.name)")
                         }
@@ -60,7 +60,7 @@ struct ForecastView: View {
                 
                 Divider()
                 
-                MonthViewBelowThirty(thirty: $selectedCity.thirtyWeather) { date, weather in
+                MonthViewBelowThirty(thirty: viewModel.thirtyWeather) { date, weather in
                     VStack {
                         Text(String(self.calendar.component(.day, from: date)))
                         
@@ -86,7 +86,8 @@ struct ForecastView: View {
 struct ForecastView_Previews: PreviewProvider {
     static var previews: some View {
         let store = CityStore()
-        ForecastView(selectedCity: store.cities.first ?? City(name: "Xinyi", lon: 111.1032678, lat: 22.4277951))
+        let viewModel = CalendarViewModel(selectedCity: store.cities.first ?? City(name: "Xinyi", lon: 111.1032678, lat: 22.4277951))
+        ForecastView(viewModel: viewModel)
             .environmentObject(CityStore())
     }
 }
