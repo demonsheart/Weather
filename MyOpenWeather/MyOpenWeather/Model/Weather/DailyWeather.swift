@@ -184,6 +184,10 @@ struct ThirtyDailyWeather: Codable, Identifiable {
         return weather.first?.iconURL ?? ""
     }
     
+    var date: Date {
+        return Date(timeIntervalSince1970: dt)
+    }
+    
     enum CodingKeys: String, CodingKey {
         case dt = "dt"
         case sunrise = "sunrise"

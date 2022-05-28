@@ -184,18 +184,37 @@ struct RootView: View {
 
 
 // MARK: Custom
-struct WeekViewWithBorder<DateView>: View where DateView: View {
+struct MonthViewBelowThirty<DateView>: View where DateView: View {
     @Environment(\.calendar) var calendar
-
-    let week: Date
-    let content: (Date) -> DateView
-
-    init(week: Date, @ViewBuilder content: @escaping (Date) -> DateView) {
-        self.week = week
-        self.content = content
+    
+    let content: (Date, ThirtyDailyWeather?) -> DateView
+    @Binding var thirty: ThirtyWeatherList?
+    
+    var weathers: [ThirtyDailyWeather] {
+        return thirty?.list ?? [ThirtyDailyWeather]()
+    }
+    
+    var dates: [Date] {
+        return weathers.map { $0.date } .sorted { $0 < $1 }
     }
 
-    private var days: [Date] {
+    init(
+        thirty: Binding<ThirtyWeatherList?>,
+        @ViewBuilder content: @escaping (Date, ThirtyDailyWeather?) -> DateView
+    ) {
+        self.content = content
+        self._thirty = thirty
+    }
+
+    private var weeks: [Date] {
+        let monthInterval = DateInterval(start: Date(), duration: TimeInterval(30 * 24 * 60 * 60))
+        return calendar.generateDates(
+            inside: monthInterval,
+            matching: DateComponents(hour: 0, minute: 0, second: 0, weekday: calendar.firstWeekday)
+        )
+    }
+    
+    private func weakOfDate(week: Date) -> [Date] {
         guard
             let weekInterval = calendar.dateInterval(of: .weekOfYear, for: week)
             else { return [] }
@@ -205,48 +224,32 @@ struct WeekViewWithBorder<DateView>: View where DateView: View {
             matching: DateComponents(hour: 0, minute: 0, second: 0)
         )
     }
-
-    var body: some View {
-        HStack {
-            ForEach(days, id: \.self) { date in
-                HStack {
-                    if self.calendar.isDate(self.week, equalTo: date, toGranularity: .month) && date > Date().dayBefore {
-                        self.content(date)
-                    } else {
-                        self.content(date).hidden()
-                    }
-                }
+    
+    func getWeatherFor(date: Date) -> ThirtyDailyWeather? {
+        var res: ThirtyDailyWeather? = nil
+        for weather in weathers {
+            if (self.calendar.isDate(date, inSameDayAs: weather.date)) {
+                res = weather
+                break
             }
         }
-    }
-}
-
-struct MonthViewBelowThirty<DateView>: View where DateView: View {
-    @Environment(\.calendar) var calendar
-
-    let current: Date
-    let content: (Date) -> DateView
-
-    init(
-        showHeader: Bool = true,
-        @ViewBuilder content: @escaping (Date) -> DateView
-    ) {
-        self.current = Date()
-        self.content = content
-    }
-
-    private var weeks: [Date] {
-        let monthInterval = DateInterval(start: current, duration: TimeInterval(30 * 24 * 60 * 60))
-        return calendar.generateDates(
-            inside: monthInterval,
-            matching: DateComponents(hour: 0, minute: 0, second: 0, weekday: calendar.firstWeekday)
-        )
+        return res
     }
 
     var body: some View {
         VStack {
             ForEach(weeks, id: \.self) { week in
-                WeekViewWithBorder(week: week, content: self.content)
+                HStack {
+                    ForEach(weakOfDate(week: week), id: \.self) { date in
+                        HStack {
+                            if self.calendar.isDate(week, equalTo: date, toGranularity: .month) && date > Date().dayBefore {
+                                self.content(date, getWeatherFor(date: date))
+                            } else {
+                                self.content(date, nil).hidden()
+                            }
+                        }
+                    }
+                }
             }
         }
     }

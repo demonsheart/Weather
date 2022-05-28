@@ -38,6 +38,7 @@ class City: ObservableObject, Codable, Hashable {
         self.latitude = lat
         self.weather = nil
         self.getWeather()
+        self.getThirtyWeather()
     }
     
     init(cityData data: CityCompletion.CityData) {

@@ -14,10 +14,14 @@ struct ForecastView: View {
     
     @EnvironmentObject var cityStore: CityStore
     
+    @State var selectedCity: City
+    
+    let dateStr = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
+    
     var customLabel: some View {
         HStack {
             Image(systemName: "location")
-            Text(String(cityStore.selectedCity.name))
+            Text(String(selectedCity.name))
             Text("⌵")
                 .offset(y: -4)
         }
@@ -36,7 +40,7 @@ struct ForecastView: View {
             
             VStack {
                 Menu {
-                    Picker(selection: $cityStore.selectedCity, label: EmptyView()) {
+                    Picker(selection: $selectedCity, label: EmptyView()) {
                         ForEach(cityStore.cities, id: \.self) { item in
                             Text("\(item.name)")
                         }
@@ -47,13 +51,28 @@ struct ForecastView: View {
                 
                 Divider()
                 
-                MonthViewBelowThirty(showHeader: false) { date in
+                HStack {
+                    ForEach(dateStr, id: \.self) { d in
+                        Text(d)
+                            .padding(EdgeInsets(top: 3, leading: 6, bottom: 3, trailing: 6))
+                    }
+                }
+                
+                Divider()
+                
+                MonthViewBelowThirty(thirty: $selectedCity.thirtyWeather) { date, weather in
                     VStack {
                         Text(String(self.calendar.component(.day, from: date)))
-                        // TODO: set weather
-                        KFImage(URL(string: "https://openweathermap.org/img/wn/10d@2x.png"))
-                            .resizable()
-                            .frame(width: 30, height: 30)
+                        
+                        if let icon = weather?.icon {
+                            KFImage(URL(string: icon))
+                                .resizable()
+                                .frame(width: 30, height: 30)
+                        } else {
+                            Text("-")
+                                .frame(width: 30, height: 30)
+                        }
+                        
                     }
                     .padding(EdgeInsets(top: 3, leading: 6, bottom: 3, trailing: 6))
                 }
@@ -66,7 +85,8 @@ struct ForecastView: View {
 
 struct ForecastView_Previews: PreviewProvider {
     static var previews: some View {
-        ForecastView()
+        let store = CityStore()
+        ForecastView(selectedCity: store.cities.first ?? City(name: "Xinyi", lon: 111.1032678, lat: 22.4277951))
             .environmentObject(CityStore())
     }
 }

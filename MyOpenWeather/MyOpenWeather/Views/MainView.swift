@@ -16,7 +16,7 @@ struct MainView: View {
                 .tabItem {
                     Label("Weather", systemImage: "cloud")
                 }
-            ForecastView().environmentObject(cityStore)
+            ForecastView(selectedCity: cityStore.cities.first ?? City(name: "Xinyi", lon: 111.1032678, lat: 22.4277951)).environmentObject(cityStore)
                 .tabItem {
                     Label("Forecast", systemImage: "calendar")
                 }
